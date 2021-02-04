@@ -13,6 +13,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.web.reactive.function.client.WebClient;
 import reactor.test.StepVerifier;
 
 import java.io.IOException;
@@ -27,15 +28,18 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 class StackResponseClientTest {
 
     private static MockWebServer mockBackEnd;
-    @Autowired
+
     private StackResponseClient stackResponseClient;
     @Autowired
     private OwnerService ownerService;
+    private static String baseUrl ="";
 
     @BeforeAll
     static void setUp() throws IOException {
         mockBackEnd = new MockWebServer();
         mockBackEnd.start();
+        baseUrl =mockBackEnd.url("/").toString();
+
     }
 
     @AfterAll
@@ -45,6 +49,7 @@ class StackResponseClientTest {
 
     @BeforeEach
     void initialize() {
+        this.stackResponseClient = new StackResponseClient(WebClient.builder(),baseUrl);
     }
 
     @Test
@@ -58,8 +63,6 @@ class StackResponseClientTest {
         );
 
 
-        //почему-то не мокается webclient и запрос уходит на реальный сервер
-
         StepVerifier.create(stackResponseClient.getStackResponse())
                 .assertNext(res -> {
                     List<Owner> owners = ownerService.getOwnersFromStackResponse(res);
@@ -69,6 +72,7 @@ class StackResponseClientTest {
                         assertEquals("https://stackoverflow.com/users/"
                                 + owner.getUserId() + "/"
                                 + owner.getDisplayName().toLowerCase().replace(" ", "-"), owner.getLink());
+                        System.out.println(owner);
                     }
                 })
                 .verifyComplete();
