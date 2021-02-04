@@ -1,7 +1,6 @@
 package by.dzikovskiy.idt.component;
 
 import by.dzikovskiy.idt.entity.Owner;
-import by.dzikovskiy.idt.entity.StackResponse;
 import by.dzikovskiy.idt.service.OwnerService;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import okhttp3.mockwebserver.MockResponse;
@@ -14,7 +13,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
 import java.io.IOException;
@@ -60,7 +58,7 @@ class StackResponseClientTest {
         );
 
 
-        //почему-то не мокается webclient и запрос уходит на реальный сервер 
+        //почему-то не мокается webclient и запрос уходит на реальный сервер
 
         StepVerifier.create(stackResponseClient.getStackResponse())
                 .assertNext(res -> {
@@ -70,21 +68,10 @@ class StackResponseClientTest {
                         assertNotNull(owner);
                         assertEquals("https://stackoverflow.com/users/"
                                 + owner.getUserId() + "/"
-                                + owner.getDisplayName().toLowerCase().replace(" ","-"), owner.getLink());
+                                + owner.getDisplayName().toLowerCase().replace(" ", "-"), owner.getLink());
                     }
                 })
                 .verifyComplete();
-
-//        Mono<StackResponse> stackResponseMono = this.stackResponseClient.getStackResponse();
-//        StackResponse stackResponse = stackResponseMono.block();
-//        List<Owner> owners = ownerService.getOwnersFromStackResponse(stackResponse);
-//
-//        Assertions.assertTrue(owners.size() <= 10);
-//
-//        for (Owner owner : owners) {
-//            assertNotNull(owner);
-//            assertEquals("https://stackoverflow.com/users/" + owner.getUserId() + "/" + owner.getDisplayName(), owner.getLink());
-//        }
 
     }
 }
