@@ -72,7 +72,6 @@ class StackResponseClientTest {
                         assertEquals("https://stackoverflow.com/users/"
                                 + owner.getUserId() + "/"
                                 + owner.getDisplayName().toLowerCase().replace(" ", "-"), owner.getLink());
-                        System.out.println(owner);
                     }
                 })
                 .verifyComplete();
